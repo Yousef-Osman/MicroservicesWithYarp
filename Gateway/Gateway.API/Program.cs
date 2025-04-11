@@ -3,6 +3,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -13,9 +16,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/gateway", () =>
-{
-    return Results.Ok("This is the Gateway");
-});
+app.MapReverseProxy();
 
 app.Run();
